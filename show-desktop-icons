@@ -1,0 +1,34 @@
+#!/usr/bin/env zsh
+set -eu
+AUTOHIDE_TIMER=${1:-1m}
+defaults write com.apple.finder CreateDesktop true
+killall Finder
+
+function autohide() {
+  echo "Desktop icons will be automatically hidden in $1 seconds. You can choose autohiding duration from \"1h\", \"30m\", \"10m\" and \"5m\". If you want to disable autohiding, pass \"disable-autohide\" as an argument." >/dev/stderr
+  sleep $1
+  defaults write com.apple.finder CreateDesktop false
+  killall Finder
+}
+
+case $AUTOHIDE_TIMER in
+1h)
+  autohide 3600 &
+  ;;
+30m)
+  autohide 1800 &
+  ;;
+10m)
+  autohide 600 &
+  ;;
+5m)
+  autohide 300 &
+  ;;
+10s)
+  autohide 10 &
+  ;;
+disable-autohide) ;;
+*)
+  autohide 60 &
+  ;;
+esac
